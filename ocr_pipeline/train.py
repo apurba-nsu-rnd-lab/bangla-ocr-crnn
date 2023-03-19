@@ -2,16 +2,14 @@ import json
 import os
 import pickle
 import random
-import cv2
 import numpy as np
 import pandas as pd
 import torch
 from configs import get_train_config
-from data.dataset_utils import (decode_prediction, encode_apurba_data,
-                                encode_banglawriting_data, encode_bnhtrd,
-                                encode_mjsynth_data, encode_synth_data,
-                                get_padded_labels)
-from data.datasets import (ApurbaDataset, BanglaWritingDataset, BNHTRDataset,
+from data.dataset_utils import (decode_prediction, encode_banglawriting_data,
+                                encode_bnhtrd, encode_mjsynth_data,
+                                encode_synth_data, get_padded_labels)
+from data.datasets import (BanglaWritingDataset, BNHTRDataset,
                            MJSynthDataset, SynthDataset)
 from models.model_vgg import get_crnn
 from torch import optim
@@ -100,20 +98,6 @@ elif args.dataset == "bnhtrd":
     train_dataset = BNHTRDataset(DATA_PATH, TRAIN_CSV, transform=args.augment)
     valid_dataset = BNHTRDataset(DATA_PATH, VAL_CSV, transform=args.augment)
 
-elif args.dataset == "apurba":
-
-    # Path to dataset
-    DATA_PATH = "/home/ec2-user/word_level_ocr/pritom/datasets/apurba_dataset/"
-    TRAIN_CSV = args.apurba_train_csv
-    VAL_CSV = args.apurba_valid_csv
-
-    # Preprocess the data and get grapheme dictionary and labels
-    _, words_tr, labels_tr, lengths_tr = encode_apurba_data(os.path.join(DATA_PATH, TRAIN_CSV), inv_grapheme_dict, representation=args.grapheme_rep)
-    _, words_val, labels_val, lengths_val = encode_apurba_data(os.path.join(DATA_PATH, VAL_CSV), inv_grapheme_dict, representation=args.grapheme_rep)
-	
-    # train_dataset = ApurbaDataset(DATA_PATH, os.path.join(DATA_PATH, TRAIN_CSV), transform=args.augment)
-    train_dataset = ApurbaDataset("", os.path.join(DATA_PATH, TRAIN_CSV), transform=args.augment)
-    valid_dataset = ApurbaDataset(DATA_PATH, os.path.join(DATA_PATH, VAL_CSV), transform=args.augment)
 
 # Save grapheme dictionary
 # with open("./ckpts/inv_grapheme_dict_synth.pickle", 'wb') as handle:

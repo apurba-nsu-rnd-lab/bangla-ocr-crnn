@@ -107,44 +107,6 @@ class SynthDataset(data.Dataset):
         
         return image, idx
 
-
-class  ApurbaDataset(data.Dataset):
-    def __init__(self, img_dir, csv_path, transform=False):
-
-        self.img_dir = img_dir
-        self.inp_h = 32
-        self.inp_w = 128
-        self.images = pd.read_csv(csv_path)
-		
-        self.transform = data_transform if transform else None
-
-    def __len__(self):
-        return len(self.images)
-
-    def __getitem__(self, idx):
-        img_path = os.path.join(self.img_dir, self.images.iloc[idx]['Path']) # use 'Image Path' for march snap
-
-        # label = self.images.iloc[idx]['Word']
-        aid = self.images.iloc[idx]['id']
-        image = cv2.imread(img_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        img_h, img_w = image.shape
-
-        image = cv2.resize(image, (0,0), fx=self.inp_w / img_w, fy=self.inp_h / img_h, interpolation=cv2.INTER_CUBIC)
-        #print(image.shape)
-        image = np.reshape(image, (self.inp_h, self.inp_w, 1))
-        #print(image.shape)
-        
-        if self.transform is not None:
-            image = self.transform(image = image)["image"]
-            return image, aid
-            
-        image = image.transpose(2, 0, 1)
-        #print(image.shape)
-        
-        return image, aid
-
     
 class BNHTRDataset(data.Dataset):
     def __init__(self, img_dir, csv_file, transform=False):

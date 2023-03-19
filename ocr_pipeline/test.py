@@ -6,10 +6,9 @@ import random
 import numpy as np
 import torch
 from configs import get_test_config
-from data.dataset_utils import (decode_prediction, encode_apurba_data,
-                                encode_banglawriting_data, encode_bnhtrd,
-                                encode_synth_data, get_padded_labels)
-from data.datasets import (ApurbaDataset, BanglaWritingDataset, BNHTRDataset,
+from data.dataset_utils import (decode_prediction, encode_banglawriting_data,
+                                encode_bnhtrd, encode_synth_data, get_padded_labels)
+from data.datasets import (BanglaWritingDataset, BNHTRDataset,
                            SynthDataset)
 from models.model_vgg import get_crnn
 from torch import quantization
@@ -58,26 +57,19 @@ elif args.dataset == "synthetic":
     _, words_te, labels_te, lengths_te = encode_synth_data(os.path.join(DATA_PATH, "test_labels.txt"), inv_grapheme_dict, representation=args.grapheme_rep)
     test_dataset = SynthDataset(os.path.join(DATA_PATH, "test"))
 
-if args.dataset == "banglawriting":
+elif args.dataset == "banglawriting":
 
     DATA_PATH = "/home/ec2-user/word_level_ocr/pritom/datasets/handwriting/BanglaWriting_words/"
     TEST_TXT = args.banglawriting_txt
     _, words_te, labels_te, lengths_te = encode_banglawriting_data(os.path.join(DATA_PATH, TEST_TXT), inv_grapheme_dict, representation=args.grapheme_rep)
     test_dataset = BanglaWritingDataset(os.path.join(DATA_PATH, "raw"), os.path.join(DATA_PATH, TEST_TXT)) # converted or raw
 
-if args.dataset == "bnhtrd":
+elif args.dataset == "bnhtrd":
 
     DATA_PATH = "/home/ec2-user/word_level_ocr/pritom/datasets/handwriting/BN-HTRd/"
     CSV_PATH = args.bnhtrd_csv
     _, words_te, labels_te, lengths_te = encode_bnhtrd(os.path.join(DATA_PATH, CSV_PATH), inv_grapheme_dict, representation=args.grapheme_rep)
     test_dataset = BNHTRDataset(DATA_PATH, CSV_PATH)
-
-if args.dataset == "apurba":
-
-    DATA_PATH = "/home/ec2-user/word_level_ocr/pritom/datasets/apurba_dataset/"
-    CSV_PATH = args.apurba_csv_path
-    _, words_te, labels_te, lengths_te = encode_apurba_data(os.path.join(DATA_PATH, CSV_PATH), inv_grapheme_dict, representation=args.grapheme_rep)
-    test_dataset = ApurbaDataset(DATA_PATH, os.path.join(DATA_PATH, CSV_PATH))
 
 
 inference_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size, num_workers=8)

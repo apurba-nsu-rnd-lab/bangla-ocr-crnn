@@ -170,67 +170,6 @@ def encode_synth_data(labels_file, inv_grapheme_dict=None, representation='ads')
     return inv_grapheme_dict, words, labels, lengths
 
 
-
-def encode_apurba_data(csv_path, inv_grapheme_dict=None, representation='ads'):
-    
-    labels = {}
-    words = {}
-    lengths = {}
-
-    labels_df = pd.read_csv(csv_path)
-        
-    if inv_grapheme_dict is None:
-        grapheme_dict = {}
-        # 0 is reserved for ctc blank
-        grapheme_dict['<pad>'] = 1  # pad
-        grapheme_dict['<unk>'] = 2  # OOV
-        count = 3 # valid graphemes start from 3
-    else:
-        grapheme_dict = {v: k for k, v in inv_grapheme_dict.items()}
-    
-    
-    if representation == 'ads':
-        extract_graphemes = ads_grapheme_extraction
-    elif representation == 'vds': 
-        extract_graphemes = vds_grapheme_extraction
-    elif representation == 'naive':
-        extract_graphemes = naive_grapheme_extraction
-    else:
-        raise ValueError("Invalid chracter representation method. Must be one of ads, vds or naive.")
-    
-    
-    print("\nPreprocessing data:")
-    for i, row in tqdm(labels_df.iterrows(), total=len(labels_df)):
-        curr_word = str(row['Word'])
-        curr_word = curr_word.strip()
-        curr_word = normalize_word(curr_word)
-        aid = row['id']
-        
-        curr_label = []
-        words[aid] = curr_word
-        graphemes = extract_graphemes(curr_word)
-        
-        for grapheme in graphemes:
-            if grapheme not in grapheme_dict:
-                if inv_grapheme_dict is None:
-                    grapheme_dict[grapheme] = count
-                    curr_label.append(count)
-                    count += 1
-                else:
-                    curr_label.append(grapheme_dict['<unk>']) 
-            else:
-                curr_label.append(grapheme_dict[grapheme])
-                
-        lengths[aid] = len(curr_label)
-        labels[aid] = curr_label
-            
-    if inv_grapheme_dict is None:
-        inv_grapheme_dict = {v: k for k, v in grapheme_dict.items()}
-    
-    return inv_grapheme_dict, words, labels, lengths
-
-
-
 def encode_bnhtrd(csv_path, inv_grapheme_dict=None, representation='ads'):
 
     labels = {}
