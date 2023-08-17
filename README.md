@@ -10,3 +10,19 @@ The dataset and test protocols are be made publicly available at [figshare](http
 ## Updates
 10 June 2023:
 The paper has been accepted for publication in International Journal on Document Analysis and Recognition (IJDAR).
+
+
+--------------------------------------
+
+## Citation
+If you find this useful, please cite
+```
+@article{roy2023multifaceted,
+  title={A multifaceted evaluation of representation of graphemes for practically effective Bangla OCR},
+  author={Roy, Koushik and Hossain, Md Sazzad and Saha, Pritom Kumar and Rohan, Shadman and Ashrafi, Imranul and Rezwan, Ifty Mohammad and Rahman, Fuad and Hossain, BM Mainul and Kabir, Ahmedul and Mohammed, Nabeel},
+  journal={International Journal on Document Analysis and Recognition (IJDAR)},
+  pages={1--23},
+  year={2023},
+  publisher={Springer}
+}
+```
